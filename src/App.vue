@@ -4,10 +4,12 @@ import Button from 'primevue/button';
 
 import { ref } from 'vue';
 
-const loading = ref(false);
+const loading = ref<boolean>(false);
+const text = ref<string>('');
 
 const load = () => {
   loading.value = true;
+  console.log(text.value);
   setTimeout(() => {
     loading.value = false;
   }, 2000);
@@ -19,7 +21,7 @@ const load = () => {
     <div class="searchWrapper">
       <span>Search widget here</span>
       <div class="searchWidget">
-        <InputText type="text" class="p-inputtext" />
+        <InputText type="text" class="p-inputtext" v-model="text"/>
         <Button label="Search" :loading="loading" @click="load" />
       </div>
     </div>
