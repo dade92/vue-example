@@ -2,7 +2,7 @@
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import type { Result } from '@/views/Data'
 import ResultsView from '@/views/ResultsView.vue'
 
@@ -12,15 +12,15 @@ interface Results {
 
 const loading = ref<boolean>(false)
 const text = ref<string>('')
-const results = ref<Results>({data: []})
+const resultsRef = ref<Results>({ data: [] })
 
 const load = async () => {
   loading.value = true
   await fetch(`/api/search/${text.value}`)
     .then((response) => {
       if (response.status === 200) {
-        response.json().then(r => {
-          results.value.data = r.results as Result[]
+        response.json().then((r) => {
+          resultsRef.value.data = r.results as Result[]
         })
       }
       loading.value = false
@@ -37,7 +37,7 @@ const load = async () => {
         <InputText type="text" class="p-inputtext" v-model="text" />
         <Button label="Search" :loading="loading" @click="load" />
       </div>
-      <ResultsView v-if="results.data.length > 0" :results="results.data" />
+      <ResultsView v-if="resultsRef.data.length > 0" :results="resultsRef.data" />
     </div>
   </div>
 </template>
