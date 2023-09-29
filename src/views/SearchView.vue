@@ -1,25 +1,32 @@
 <script setup lang="ts">
 import InputText from 'primevue/inputtext'
-import Button from 'primevue/button';
+import Button from 'primevue/button'
 
-import { onMounted, ref } from "vue";
-import router from "@/router";
+import { onMounted, ref } from 'vue'
+import type { Result } from '@/views/Data'
+import ResultsView from '@/views/ResultsView.vue'
 
-const loading = ref<boolean>(false);
-const text = ref<string>('');
+interface Results {
+  data: Result[]
+}
 
-onMounted(() => {
-  console.log(`the component is now mounted.`);
-})
+const loading = ref<boolean>(false)
+const text = ref<string>('')
+const results = ref<Results>({data: []})
 
-const load = () => {
-  loading.value = true;
-  console.log(text.value);
-  router.push({name: 'results'});
-  setTimeout(() => {
-    loading.value = false;
-  }, 2000);
-};
+const load = async () => {
+  loading.value = true
+  await fetch(`/api/search/${text.value}`)
+    .then((response) => {
+      if (response.status === 200) {
+        response.json().then(r => {
+          results.value.data = r.results as Result[]
+        })
+      }
+      loading.value = false
+    })
+    .catch((e) => {})
+}
 </script>
 
 <template>
@@ -27,9 +34,10 @@ const load = () => {
     <div class="searchWrapper">
       <span>Search widget here</span>
       <div class="searchWidget">
-        <InputText type="text" class="p-inputtext" v-model="text"/>
+        <InputText type="text" class="p-inputtext" v-model="text" />
         <Button label="Search" :loading="loading" @click="load" />
       </div>
+      <ResultsView v-if="results.data.length > 0" :results="results.data" />
     </div>
   </div>
 </template>
