@@ -8,6 +8,14 @@ interface Props {
 
 const { results } = defineProps<Props>()
 
+const emit = defineEmits<{
+  (e: 'onTextClick', text: string): void
+}>()
+
+const onTextClicked = (text: string): void => {
+  emit('onTextClick', text)
+}
+
 onMounted(() => {
   results.map((r) => {
     console.log(r.data)
@@ -18,6 +26,6 @@ onMounted(() => {
 <template>
   <span>Results:</span>
   <li v-for="r in results" :key="r">
-    {{ r.data }}
+    <span @click="onTextClicked(r.data)">{{ r.data }}</span>
   </li>
 </template>

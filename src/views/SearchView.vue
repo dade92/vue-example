@@ -37,7 +37,11 @@ const load = async () => {
         <InputText type="text" class="p-inputtext" v-model="text" />
         <Button label="Search" :loading="loading" @click="load" />
       </div>
-      <ResultsView v-if="resultsRef.data.length > 0" :results="resultsRef.data" />
+      <ResultsView
+        v-if="resultsRef.data.length > 0"
+        :results="resultsRef.data"
+        @onTextClick="(t: string) => console.log(t)"
+      />
     </div>
   </div>
 </template>
