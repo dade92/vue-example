@@ -2,10 +2,14 @@
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button';
 
-import { ref } from 'vue';
+import { onMounted, ref } from "vue";
 
 const loading = ref<boolean>(false);
 const text = ref<string>('');
+
+onMounted(() => {
+  console.log(`the component is now mounted.`);
+})
 
 const load = () => {
   loading.value = true;
