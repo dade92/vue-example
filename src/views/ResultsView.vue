@@ -17,7 +17,7 @@ onMounted(() => {
 
 <template>
   <span>Results:</span>
-  <li v-for="r in results">
+  <li v-for="r in results" :key="r">
     {{ r.data }}
   </li>
 </template>
