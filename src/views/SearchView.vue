@@ -2,6 +2,7 @@
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 
+
 import { ref } from 'vue'
 import type { Result } from '@/views/Data'
 import ResultsView from '@/views/ResultsView.vue'
@@ -13,26 +14,29 @@ interface Results {
 const loading = ref<boolean>(false)
 const text = ref<string>('')
 const resultsRef = ref<Results>({ data: [] })
+const error = ref<boolean>(false)
 
 const load = async () => {
   loading.value = true
   await fetch(`/api/search/${text.value}`)
     .then((response) => {
       if (response.status === 200) {
+        error.value = false
         response.json().then((r) => {
           resultsRef.value.data = r.results as Result[]
         })
+      } else {
+        error.value = true
       }
       loading.value = false
     })
-    .catch((e) => {})
 }
 </script>
 
 <template>
   <div class="wrapper">
     <div class="searchWrapper">
-      <span>Search widget here</span>
+      <span>Search here for products:</span>
       <div class="searchWidget">
         <InputText type="text" class="p-inputtext" v-model="text" />
         <Button label="Search" :loading="loading" @click="load" />
@@ -42,6 +46,7 @@ const load = async () => {
         :results="resultsRef.data"
         @onTextClick="(t: string) => console.log(t)"
       />
+      <Message v-if="error" severity="error">Error retrieving search results</Message>
     </div>
   </div>
 </template>
@@ -49,7 +54,7 @@ const load = async () => {
 <style scoped>
 .searchWrapper {
   display: flex;
-  gap: 8px;
+  gap: 16px;
   flex-direction: column;
   width: min-content;
 }
